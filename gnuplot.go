@@ -14,6 +14,7 @@ type gnuplotFlags struct {
 	Duration   time.Duration
 	Prometheus string
 	Title      string
+	Resolution string
 }
 
 var gnuplotFlag gnuplotFlags
@@ -26,7 +27,7 @@ func gnuplotAction(c *cli.Context) error {
 	end := time.Now()
 	start := end.Add(-1 * gnuplotFlag.Duration)
 
-	results, err := Query(gnuplotFlag.Prometheus, start, end, c.Args().First())
+	results, err := Query(gnuplotFlag.Prometheus, start, end, c.Args().First(), gnuplotFlag.Resolution)
 	if err != nil {
 		return err
 	}

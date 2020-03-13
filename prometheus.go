@@ -28,7 +28,7 @@ type Result struct {
 	Values map[string]string
 }
 
-func Query(host string, start time.Time, end time.Time, query string) ([]Result, error) {
+func Query(host string, start time.Time, end time.Time, query string, resolution string) ([]Result, error) {
 	u, err := url.Parse(host)
 	if err != nil {
 		return nil, err
@@ -43,6 +43,10 @@ func Query(host string, start time.Time, end time.Time, query string) ([]Result,
 	q.Set("start", fmt.Sprintf("%d", start.Unix()))
 	q.Set("end", fmt.Sprintf("%d", end.Unix()))
 	q.Set("step", fmt.Sprintf("%d", steps(end.Sub(start))))
+
+	if resolution != "" {
+		q.Set("step", resolution)
+	}
 	u.RawQuery = q.Encode()
 
 	response, err := http.Get(u.String())

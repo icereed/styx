@@ -33,6 +33,10 @@ func main() {
 			Value:       "http://localhost:9090",
 			Destination: &flag.Prometheus,
 		},
+		cli.StringFlag{
+			Name:        "resolution,r",
+			Destination: &flag.Resolution,
+		},
 	}
 
 	app.Commands = []cli.Command{{
@@ -56,6 +60,10 @@ func main() {
 				Usage:       "Give the gnuplot graph a title",
 				Destination: &gnuplotFlag.Title,
 			},
+			cli.StringFlag{
+				Name:        "resolution,r",
+				Destination: &gnuplotFlag.Resolution,
+			},
 		},
 	}, {
 		Name:   "matplotlib",
@@ -78,6 +86,10 @@ func main() {
 				Usage:       "Give the gnuplot graph a title",
 				Destination: &matplotlibFlag.Title,
 			},
+			cli.StringFlag{
+				Name:        "resolution,r",
+				Destination: &matplotlibFlag.Resolution,
+			},
 		},
 	}}
 
@@ -90,6 +102,7 @@ type flags struct {
 	Duration   time.Duration
 	Header     bool
 	Prometheus string
+	Resolution string
 }
 
 var flag flags
@@ -102,7 +115,7 @@ func exportAction(c *cli.Context) error {
 	end := time.Now()
 	start := end.Add(-1 * flag.Duration)
 
-	results, err := Query(flag.Prometheus, start, end, c.Args().First())
+	results, err := Query(flag.Prometheus, start, end, c.Args().First(), flag.Resolution)
 	if err != nil {
 		return err
 	}
